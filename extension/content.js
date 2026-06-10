@@ -1,6 +1,4 @@
-let panel = null;
-
-function getPageContent() {
+if (typeof panel === 'undefined') var panel = null;function getPageContent() {
   const selected = window.getSelection().toString().trim();
   if (selected.length > 50) return { content: selected, url: location.href };
   const main = document.querySelector('article, main, [role="main"], .content, #content');

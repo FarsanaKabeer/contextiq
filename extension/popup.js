@@ -24,8 +24,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('open-panel-btn').onclick = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { type: 'OPEN_PANEL' });
-      window.close();
+      const tab = tabs[0];
+      // Check if tab is a valid page
+      if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
+        status.textContent = '⚠ Go to a webpage first!';
+        return;
+      }
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['content.js']
+      }, () => {
+        chrome.tabs.sendMessage(tab.id, { type: 'OPEN_PANEL' });
+        window.close();
+      });
     });
   };
 });
